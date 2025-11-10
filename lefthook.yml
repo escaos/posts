@@ -1,0 +1,12 @@
+pre-commit:
+  parallel: true
+  commands:
+    lint:
+      run: npm run lint
+    test:
+      run: npm run test -- --bail --runInBand --passWithNoTests
+
+pre-push:
+  commands:
+    typecheck:
+      run: npm run typecheck

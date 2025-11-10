@@ -1,0 +1,33 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.4/schema.json",
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space"
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "a11y": {
+        "noAriaUnsupportedElements": "off"
+      },
+      "suspicious": {
+        "noArrayIndexKey": "off"
+      }
+    }
+  },
+  "files": {
+    "includes": [
+      "App.tsx",
+      "__tests__/**/*.{ts,tsx}",
+      "jest/**/*.{ts,tsx}",
+      "src/**/*.{ts,tsx}",
+      "metro.config.js",
+      "babel.config.js",
+      "package.json",
+      "tsconfig.json",
+      "tailwind.config.js",
+      "lefthook.yml"
+    ]
+  }
+}
