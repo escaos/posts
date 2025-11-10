@@ -51,7 +51,7 @@ export function PostDetailScreen() {
   } = usePost(postId, initialPost);
 
   const {
-    data: comments,
+    data: comments = [],
     isLoading: isCommentsLoading,
     isError: isCommentsError,
     refetch: refetchComments,
@@ -106,13 +106,13 @@ export function PostDetailScreen() {
         <CardHeader>
           <CardTitle>Comments</CardTitle>
           <CardDescription>
-            {comments?.length
+            {comments.length
               ? `${comments.length} responses`
               : "Join the conversation"}
           </CardDescription>
         </CardHeader>
         <CardContent className="gap-4">
-          {isCommentsLoading && !comments?.length ? <Spinner /> : null}
+          {isCommentsLoading && comments.length === 0 ? <Spinner /> : null}
 
           {isCommentsError ? (
             <ErrorState
@@ -122,14 +122,14 @@ export function PostDetailScreen() {
             />
           ) : null}
 
-          {!isCommentsLoading && !isCommentsError && !comments?.length ? (
+          {!isCommentsLoading && !isCommentsError && comments.length === 0 ? (
             <EmptyState
               title="No comments yet"
               description="Start the discussion by leaving the first comment."
             />
           ) : null}
 
-          {comments?.map((comment) => (
+          {comments.map((comment) => (
             <CommentItem key={comment.id} comment={comment} />
           ))}
         </CardContent>

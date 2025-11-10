@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import { View } from "react-native";
-
-import { Button, Typography } from "../ui";
 import { cn } from "../../lib/cn";
+import { Button, Typography } from "../ui";
 
 type ErrorStateProps = {
   className?: string;

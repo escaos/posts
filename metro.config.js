@@ -1,6 +1,5 @@
 const { getDefaultConfig, mergeConfig } = require("@react-native/metro-config");
 const { withNativeWind } = require("nativewind/metro");
-const { resolve } = require("path");
 
 /**
  * Metro configuration
@@ -8,13 +7,7 @@ const { resolve } = require("path");
  *
  * @type {import('@react-native/metro-config').MetroConfig}
  */
-const config = {
-  resolver: {
-    extraNodeModules: {
-      "@": resolve(__dirname, "src"),
-    },
-  },
-};
+const config = {};
 
 module.exports = withNativeWind(
   mergeConfig(getDefaultConfig(__dirname), config),

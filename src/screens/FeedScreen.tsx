@@ -79,7 +79,7 @@ export function FeedScreen() {
   const primaryColor = colors.primary ?? "#2563EB";
   const backgroundColor = colors.background ?? "#0f172a";
   const {
-    data: posts,
+    data: posts = [],
     isLoading,
     isFetching,
     isError,
@@ -116,7 +116,7 @@ export function FeedScreen() {
     />
   );
 
-  if (isLoading && !posts?.length) {
+  if (isLoading && posts.length === 0) {
     return (
       <View className="flex-1 items-center justify-center bg-background-light px-6 dark:bg-background">
         <Spinner size="large" />
@@ -124,12 +124,12 @@ export function FeedScreen() {
     );
   }
 
-  const showEmptyState = !posts?.length;
+  const showEmptyState = posts.length === 0;
 
   return (
     <View className="flex-1 bg-background-light dark:bg-background">
       <FlatList
-        data={posts ?? []}
+        data={posts}
         keyExtractor={keyExtractor}
         renderItem={renderItem}
         refreshControl={refreshControl}
@@ -160,7 +160,7 @@ export function FeedScreen() {
           )
         }
         ListFooterComponent={
-          isFetching && posts?.length ? <Spinner className="mt-6" /> : null
+          isFetching && posts.length > 0 ? <Spinner className="mt-6" /> : null
         }
         initialNumToRender={8}
         maxToRenderPerBatch={8}

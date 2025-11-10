@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import "react-native-gesture-handler/jestSetup";
 
+import { queryClient } from "../src/providers/app-providers";
+
 jest.mock("react-native-safe-area-context", () => {
   const actual = jest.requireActual("react-native-safe-area-context");
 
@@ -17,10 +19,23 @@ jest.mock("react-native-safe-area-context", () => {
   };
 });
 
+jest.mock("react-native-screens", () => {
+  const actual = jest.requireActual("react-native-screens");
+
+  return {
+    ...actual,
+    enableScreens: jest.fn(),
+  };
+});
+
 const fetchMock = jest.fn();
 
 global.fetch = fetchMock as unknown as typeof fetch;
 
 beforeEach(() => {
   fetchMock.mockReset();
+});
+
+afterEach(() => {
+  queryClient.clear();
 });

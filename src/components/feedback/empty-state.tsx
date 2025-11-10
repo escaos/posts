@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 import { View } from "react-native";
-
-import { Typography } from "../ui";
 import { cn } from "../../lib/cn";
+import { Typography } from "../ui";
 
 type EmptyStateProps = {
   className?: string;

@@ -1,9 +1,8 @@
 module.exports = {
   preset: 'react-native',
   setupFilesAfterEnv: ['<rootDir>/jest/setup.ts'],
-  resolver: '<rootDir>/jest/resolver.js',
   transformIgnorePatterns: [
-    'node_modules/(?!(@react-native|react-native|react-native-gesture-handler|@react-navigation|nativewind)/)',
+    'node_modules/(?!(@react-native|react-native|react-native-gesture-handler|@react-navigation|nativewind|react-native-css-interop)/)',
   ],
   moduleNameMapper: {
     '\\.css$': '<rootDir>/jest/styleMock.js',

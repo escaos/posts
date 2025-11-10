@@ -1,5 +1,5 @@
-import { forwardRef, type ReactNode } from "react";
-import { Pressable, Text, type PressableProps } from "react-native";
+import { type ElementRef, forwardRef, type ReactNode } from "react";
+import { Pressable, type PressableProps, Text } from "react-native";
 
 import { cn } from "../../lib/cn";
 
@@ -29,31 +29,40 @@ const textClassNames: Record<ButtonVariant, string> = {
 
 const disabledClassName = "opacity-40";
 
-export const Button = forwardRef<Pressable, ButtonProps>(function Button(
-  { className, labelClassName, variant = "primary", children, disabled, ...rest },
-  ref,
-) {
-  return (
-    <Pressable
-      ref={ref}
-      accessibilityRole="button"
-      className={cn(
-        variantClassNames[variant],
-        disabled ? disabledClassName : undefined,
-        className,
-      )}
-      disabled={disabled}
-      {...rest}
-    >
-      <Text
+export const Button = forwardRef<ElementRef<typeof Pressable>, ButtonProps>(
+  function Button(
+    {
+      className,
+      labelClassName,
+      variant = "primary",
+      children,
+      disabled,
+      ...rest
+    },
+    ref,
+  ) {
+    return (
+      <Pressable
+        ref={ref}
+        accessibilityRole="button"
         className={cn(
-          "text-base font-semibold",
-          textClassNames[variant],
-          labelClassName,
+          variantClassNames[variant],
+          disabled ? disabledClassName : undefined,
+          className,
         )}
+        disabled={disabled}
+        {...rest}
       >
-        {children}
-      </Text>
-    </Pressable>
-  );
-});
+        <Text
+          className={cn(
+            "text-base font-semibold",
+            textClassNames[variant],
+            labelClassName,
+          )}
+        >
+          {children}
+        </Text>
+      </Pressable>
+    );
+  },
+);

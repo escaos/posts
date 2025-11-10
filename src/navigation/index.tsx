@@ -21,7 +21,6 @@ export function AppNavigator() {
     <NavigationContainer theme={theme}>
       <Stack.Navigator
         screenOptions={{
-          headerBackTitleVisible: false,
           headerStyle: {
             backgroundColor: theme.colors.card,
           },

@@ -21,6 +21,10 @@ export const queryClient = new QueryClient({
 
 function useAppFocusTracking() {
   useEffect(() => {
+    if (typeof (globalThis as { jest?: unknown }).jest !== "undefined") {
+      return;
+    }
+
     const subscription = AppState.addEventListener("change", (nextAppState) => {
       focusManager.setFocused(nextAppState === "active");
     });

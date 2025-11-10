@@ -1,12 +1,15 @@
 import type { PropsWithChildren } from "react";
-import { Text, View, type TextProps, type ViewProps } from "react-native";
+import { Text, type TextProps, View, type ViewProps } from "react-native";
 
 import { cn } from "../../lib/cn";
 
 type NativeViewProps = ViewProps & { className?: string };
 type NativeTextProps = TextProps & { className?: string };
 
-export function Card({ className, ...props }: PropsWithChildren<NativeViewProps>) {
+export function Card({
+  className,
+  ...props
+}: PropsWithChildren<NativeViewProps>) {
   return (
     <View
       className={cn(
@@ -23,24 +26,14 @@ export function CardHeader({
   className,
   ...props
 }: PropsWithChildren<NativeViewProps>) {
-  return (
-    <View
-      className={cn("mb-4 gap-2", className)}
-      {...props}
-    />
-  );
+  return <View className={cn("mb-4 gap-2", className)} {...props} />;
 }
 
 export function CardContent({
   className,
   ...props
 }: PropsWithChildren<NativeViewProps>) {
-  return (
-    <View
-      className={cn("gap-3", className)}
-      {...props}
-    />
-  );
+  return <View className={cn("gap-3", className)} {...props} />;
 }
 
 export function CardFooter({
@@ -55,7 +48,10 @@ export function CardFooter({
   );
 }
 
-export function CardTitle({ className, ...props }: PropsWithChildren<NativeTextProps>) {
+export function CardTitle({
+  className,
+  ...props
+}: PropsWithChildren<NativeTextProps>) {
   return (
     <Text
       className={cn(

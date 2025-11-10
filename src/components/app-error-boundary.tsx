@@ -1,9 +1,8 @@
 import { Component, type ErrorInfo, type ReactNode } from "react";
 import { View } from "react-native";
-
+import { log } from "../lib/logger";
 import { Button } from "./ui/button";
 import { Typography } from "./ui/typography";
-import { log } from "../lib/logger";
 
 type AppErrorBoundaryProps = {
   children: ReactNode;
