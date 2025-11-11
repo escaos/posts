@@ -1,97 +1,142 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# Posts Mobile App
 
-# Getting Started
+A React Native 0.82 application that showcases a performant feed/detail experience powered by [JSONPlaceholder](https://jsonplaceholder.typicode.com/). The project embraces modern tooling (Biome, Lefthook, NativeWind, React Query) to keep developer workflows fast and the UI consistent across platforms.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Features
 
-## Step 1: Start Metro
+- **Feed screen** – paginated-style FlatList with pull-to-refresh, sensible rendering config, and memoized row components to minimise re-renders.
+- **Detail screen** – full post body plus comment thread, with graceful empty/loading/error states.
+- **React Query data layer** – shared query keys, backoff retry strategy, 60s `staleTime`, 5m cache GC, and prefetching of detail + comments on press-in.
+- **NativeWind UI kit** – reusable `Button`, `Card`, `Typography`, `Spinner`, and feedback components that provide a consistent design language, dark-mode ready.
+- **Error handling** – render-level `AppErrorBoundary` and network-level `HttpError` logging through a mocked `log(error, context)` helper.
+- **Tooling + DX** – Biome for format/lint, TypeScript path typing, Lefthook Git hooks, Jest + React Testing Library for unit tests.
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Tech Stack
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+- React 19.1 / React Native 0.82
+- TypeScript 5.8
+- React Navigation (native stack)
+- @tanstack/react-query 5.x
+- NativeWind + Tailwind CSS 3
+- Biome (code formatting & lint)
+- Jest, @testing-library/react-native
+
+## Getting Started
+
+### Prerequisites
+
+- Node 22 (see `.nvmrc`)
+- Xcode (iOS) / Android Studio (Android)
+- Ruby + Bundler (for CocoaPods)
+
+Follow the official [React Native environment setup](https://reactnative.dev/docs/set-up-your-environment) if you have not already.
+
+### Installation
 
 ```sh
-# Using npm
+# install JS deps
+npm install
+
+# install native iOS pods (first time or after native deps change)
+cd ios && bundle install && bundle exec pod install && cd ..
+```
+
+### Running
+
+```sh
+# start Metro bundler
 npm start
 
-# OR using Yarn
-yarn start
+# launch platform targets (in separate terminals)
+npm run ios     # iOS simulator / device
+npm run android # Android emulator / device
 ```
 
-## Step 2: Build and run your app
+Metro will hot-reload your changes. Use the standard RN dev menus (`Cmd+R`, `Cmd+D`, etc.) for reloads and debugging.
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+## Scripts
 
-### Android
+| Command            | Description                                              |
+| ------------------ | -------------------------------------------------------- |
+| `npm start`        | Start Metro bundler                                      |
+| `npm run ios`      | Build & launch the iOS app                               |
+| `npm run android`  | Build & launch the Android app                           |
+| `npm run lint`     | Run Biome lint/format checks (summary reporter)          |
+| `npm run lint:fix` | Apply Biome fixes                                        |
+| `npm run format`   | Format entire project with Biome                         |
+| `npm run typecheck`| Type-check with `tsc --noEmit`                           |
+| `npm run test`     | Execute Jest unit tests                                  |
+| `npm run test:watch` | Run tests in watch mode                                |
 
-```sh
-# Using npm
-npm run android
+> `npm run prepare` automatically installs Lefthook so Git hooks stay in sync.
 
-# OR using Yarn
-yarn android
+## Project Structure
+
+```
+src/
+  api/          // HTTP layer, typed endpoints, shared DTOs
+  components/   // UI primitives and feedback utilities
+  constants/    // Query key factories and other shared constants
+  features/     // React Query hooks and domain logic
+  navigation/   // App navigator + route typings
+  providers/    // Cross-cutting providers (QueryClient, focus tracking)
+  screens/      // Feed & Post detail screens
+  types/        // NativeWind + RN type augmentation
+lib/            // Shared helpers (logger, classnames)
+jest/           // Jest setup & mocks
 ```
 
-### iOS
+## Data & Caching
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+- All network calls go through `src/api/http.ts`, which adds a 15s timeout and surfaces errors as `HttpError` instances.
+- React Query caches responses with `staleTime: 60_000` (1 minute) and `gcTime: 5 * 60_000` (5 minutes).
+- Feed rows prefetch both the detail and comments queries during `onPressIn`, creating the “hover/press warm-up” requested.
+- Errors are logged via `log(error, context)` so an analytics/observability layer can later consume the data.
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+## Styling
 
-```sh
-bundle install
-```
+- NativeWind + Tailwind provide utility classes (`className`) for RN primitives via `nativewind-env.d.ts`.
+- `global.css` and `tailwind.config.js` define theme tokens for backgrounds, foregrounds, and accent colors.
+- UI primitives (`Button`, `Card`, `Typography`, etc.) ensure dark-mode friendly defaults and consistent spacing.
 
-Then, and every time you update your native dependencies, run:
+## Testing
 
-```sh
-bundle exec pod install
-```
+- Unit tests reside under `__tests__/`. The existing `App.test.tsx` exercises the feed happy-path via a mocked `fetch`.
+- Run tests with `npm run test`. Jest may report open handles if React Native internals leave async callbacks alive; re-run with `npx jest --detectOpenHandles` to investigate when needed.
+- Jest setup mocks `react-native-safe-area-context`, `react-native-screens`, and resets the shared QueryClient after each spec.
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+## Quality Gates
 
-```sh
-# Using npm
-npm run ios
+- **Biome** handles formatting (`npm run format`) and linting (`npm run lint`). The config lives in `biome.json`.
+- **Lefthook** enforces lint + tests on `pre-commit`, and type-checking on `pre-push`.
+- **TypeScript** ensures strict typing through `npm run typecheck`.
 
-# OR using Yarn
-yarn ios
-```
+## API
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+All data is sourced from `https://jsonplaceholder.typicode.com/`:
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+- `GET /posts`
+- `GET /posts/:id`
+- `GET /posts/:id/comments`
 
-## Step 3: Modify your app
+Consider replacing the endpoints or wrapping them with an API gateway before shipping to production.
 
-Now that you have successfully run the app, let's make changes!
+## Logging & Error Handling
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+- Render failures are caught by `AppErrorBoundary`, logged, and surfaced with a reset action.
+- Network errors bubble through React Query’s error states and render via shared `ErrorState` components.
+- The `log` helper currently proxies to `console` in dev; swap this implementation to wire into your preferred monitoring platform.
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+## Roadmap Ideas
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+- Add pagination/infinite scroll for the feed.
+- Extend tests to cover error and empty states.
+- Replace JSONPlaceholder with a secured backend service.
+- Integrate analytics/telemetry inside the logger.
 
-## Congratulations! :tada:
+## Resources
 
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+- [React Native docs](https://reactnative.dev/docs/getting-started)
+- [React Query docs](https://tanstack.com/query/latest)
+- [NativeWind docs](https://nativewind.dev)
+- [React Navigation docs](https://reactnavigation.org/docs/getting-started)
